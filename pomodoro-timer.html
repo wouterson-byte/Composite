@@ -34,7 +34,7 @@
 
   <header class="flex items-start justify-between gap-6 mb-12">
     <div class="flex flex-col gap-1.5">
-      <a href="index.html" class="font-mono text-xs text-emerald-600 dark:text-emerald-400 hover:underline">$ cd ../composite</a>
+      <a href="index.html" class="font-mono text-xs text-blue-600 dark:text-blue-400 hover:underline">$ cd ../composite</a>
       <h1 class="font-mono font-semibold text-2xl sm:text-3xl tracking-tight">Pomodoro Timer</h1>
     </div>
 
@@ -54,12 +54,12 @@
       </div>
 
       <div class="flex flex-col items-center gap-8 p-8 sm:p-12">
-        <span id="mode-label" class="font-mono text-xs tracking-widest uppercase px-2.5 py-1 rounded-sm bg-emerald-600/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400">work</span>
+        <span id="mode-label" class="font-mono text-xs tracking-widest uppercase px-2.5 py-1 rounded-sm bg-blue-600/10 dark:bg-blue-400/10 text-blue-600 dark:text-blue-400">work</span>
 
         <span id="time-display" class="font-mono font-semibold text-6xl sm:text-7xl tabular-nums tracking-tight">25:00</span>
 
         <div class="flex items-center gap-3">
-          <button id="start-pause-btn" type="button" class="font-mono text-sm px-5 py-2.5 rounded-sm bg-emerald-600 dark:bg-emerald-400 text-white dark:text-neutral-950 hover:opacity-90 transition-opacity">Start</button>
+          <button id="start-pause-btn" type="button" class="font-mono text-sm px-5 py-2.5 rounded-sm bg-blue-600 dark:bg-blue-400 text-white dark:text-neutral-950 hover:opacity-90 transition-opacity">Start</button>
           <button id="reset-btn" type="button" class="font-mono text-sm px-5 py-2.5 rounded-sm border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">Reset</button>
         </div>
 
@@ -175,10 +175,10 @@
     var isDark = document.documentElement.classList.contains('dark');
     document.querySelectorAll('[data-theme-btn]').forEach(function (btn) {
       var active = (btn.dataset.themeBtn === 'dark') === isDark;
-      btn.classList.toggle('bg-emerald-600/15', active);
-      btn.classList.toggle('text-emerald-700', active);
-      btn.classList.toggle('dark:bg-emerald-400/15', active);
-      btn.classList.toggle('dark:text-emerald-300', active);
+      btn.classList.toggle('bg-blue-600/15', active);
+      btn.classList.toggle('text-blue-700', active);
+      btn.classList.toggle('dark:bg-blue-400/15', active);
+      btn.classList.toggle('dark:text-blue-300', active);
       btn.classList.toggle('text-neutral-500', !active);
       btn.classList.toggle('dark:text-neutral-400', !active);
     });

@@ -35,7 +35,7 @@
   <header class="flex items-start justify-between gap-6 mb-14">
     <div class="flex flex-col gap-1.5">
       <h1 class="font-mono font-semibold text-3xl sm:text-4xl tracking-tight">~/composite</h1>
-      <p class="font-mono text-sm text-emerald-600 dark:text-emerald-400">$ browse the toolset</p>
+      <p class="font-mono text-sm text-blue-600 dark:text-blue-400">$ browse the toolset</p>
     </div>
 
     <div id="theme-toggle" class="flex items-center gap-0.5 rounded-md border border-neutral-300 dark:border-neutral-700 overflow-hidden font-mono text-xs shrink-0">
@@ -68,7 +68,7 @@
 
   function toolCardHtml(tool) {
     return (
-      '<a href="' + tool.href + '" class="group flex flex-col rounded-sm border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-emerald-500/50 dark:hover:border-emerald-400/40 transition-colors overflow-hidden">' +
+      '<a href="' + tool.href + '" class="group flex flex-col rounded-sm border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-blue-500/50 dark:hover:border-blue-400/40 transition-colors overflow-hidden">' +
         '<div class="flex items-center gap-1.5 px-3 py-2 border-b border-neutral-200 dark:border-neutral-800">' +
           '<span class="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>' +
           '<span class="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>' +
@@ -76,7 +76,7 @@
           '<span class="ml-1.5 font-mono text-[11px] text-neutral-500 dark:text-neutral-400">' + tool.href + '</span>' +
         '</div>' +
         '<div class="flex flex-col gap-4 p-5">' +
-          '<div class="w-11 h-11 rounded-md flex items-center justify-center bg-emerald-600/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400">' + tool.icon + '</div>' +
+          '<div class="w-11 h-11 rounded-md flex items-center justify-center bg-blue-600/10 dark:bg-blue-400/10 text-blue-600 dark:text-blue-400">' + tool.icon + '</div>' +
           '<div class="flex flex-col gap-1.5">' +
             '<span class="font-mono font-semibold text-[17px]">' + tool.title + '</span>' +
             '<p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">' + tool.description + '</p>' +
@@ -104,10 +104,10 @@
     var isDark = document.documentElement.classList.contains('dark');
     document.querySelectorAll('[data-theme-btn]').forEach(function (btn) {
       var active = (btn.dataset.themeBtn === 'dark') === isDark;
-      btn.classList.toggle('bg-emerald-600/15', active);
-      btn.classList.toggle('text-emerald-700', active);
-      btn.classList.toggle('dark:bg-emerald-400/15', active);
-      btn.classList.toggle('dark:text-emerald-300', active);
+      btn.classList.toggle('bg-blue-600/15', active);
+      btn.classList.toggle('text-blue-700', active);
+      btn.classList.toggle('dark:bg-blue-400/15', active);
+      btn.classList.toggle('dark:text-blue-300', active);
       btn.classList.toggle('text-neutral-500', !active);
       btn.classList.toggle('dark:text-neutral-400', !active);
     });

@@ -25,19 +25,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Status legend: not started / in progress / done. Prune completed phases'
 detail over time — keep this section skimmable.
 
-### Phase 1 — Portal + first 2 tools (not started)
-- Goal: prove the browse-and-link pattern with exactly two tools before
-  scaling to more.
-- Data model: a JS array of `{ title, description, href }` in `index.html`
-  driving the card grid; one entry per tool file.
-- Key flows:
-  - Portal renders a card per tool from the array; each card links to that
-    tool's standalone HTML file.
-  - Theme toggle writes `"light"`/`"dark"` to `localStorage["theme"]`; an
-    inline pre-paint script on every page applies it immediately (falls
-    back to `prefers-color-scheme` if unset), so the choice is consistent
-    across the portal and every tool page.
-  - Every tool page has a "back to tools" link to `index.html`.
+### Phase 1 — Portal + first 2 tools (done)
+- Proved the browse-and-link pattern: portal renders a tool-array-driven
+  card grid, each card links to a standalone tool page, theme persists
+  across navigation via a shared `localStorage` key, every tool page
+  links back to the portal.
 - Files: `index.html`, `pomodoro-timer.html`, `unit-converter.html`.
 
 ### Phase 2 — Add tools beyond the first two (not started)

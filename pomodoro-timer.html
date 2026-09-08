@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pomodoro Timer — Composite</title>
+<script>
+  (function () {
+    try {
+      var stored = localStorage.getItem('theme');
+      var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (theme === 'dark') document.documentElement.classList.add('dark');
+    } catch (e) {}
+  })();
+</script>
+<script>
+  tailwind = { config: {
+    darkMode: 'class',
+    theme: { extend: {
+      fontFamily: {
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        sans: ['"IBM Plex Sans"', 'ui-sans-serif', 'sans-serif']
+      }
+    } }
+  } };
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+</head>
+<body class="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 font-sans transition-colors">
+
+<div class="max-w-2xl mx-auto px-6 py-14 sm:py-20">
+
+  <header class="flex items-start justify-between gap-6 mb-12">
+    <div class="flex flex-col gap-1.5">
+      <a href="index.html" class="font-mono text-xs text-emerald-600 dark:text-emerald-400 hover:underline">$ cd ../composite</a>
+      <h1 class="font-mono font-semibold text-2xl sm:text-3xl tracking-tight">Pomodoro Timer</h1>
+    </div>
+
+    <div id="theme-toggle" class="flex items-center gap-0.5 rounded-md border border-neutral-300 dark:border-neutral-700 overflow-hidden font-mono text-xs shrink-0">
+      <button type="button" data-theme-btn="light" class="px-3 py-2 transition-colors">LIGHT</button>
+      <button type="button" data-theme-btn="dark" class="px-3 py-2 transition-colors">DARK</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="rounded-sm border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 overflow-hidden">
+      <div class="flex items-center gap-1.5 px-3 py-2 border-b border-neutral-200 dark:border-neutral-800">
+        <span class="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>
+        <span class="ml-1.5 font-mono text-[11px] text-neutral-500 dark:text-neutral-400">pomodoro-timer.html</span>
+      </div>
+
+      <div class="flex flex-col items-center gap-8 p-8 sm:p-12">
+        <span id="mode-label" class="font-mono text-xs tracking-widest uppercase px-2.5 py-1 rounded-sm bg-emerald-600/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400">work</span>
+
+        <span id="time-display" class="font-mono font-semibold text-6xl sm:text-7xl tabular-nums tracking-tight">25:00</span>
+
+        <div class="flex items-center gap-3">
+          <button id="start-pause-btn" type="button" class="font-mono text-sm px-5 py-2.5 rounded-sm bg-emerald-600 dark:bg-emerald-400 text-white dark:text-neutral-950 hover:opacity-90 transition-opacity">Start</button>
+          <button id="reset-btn" type="button" class="font-mono text-sm px-5 py-2.5 rounded-sm border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">Reset</button>
+        </div>
+
+        <div class="flex items-center gap-8 pt-4 border-t border-neutral-200 dark:border-neutral-800 w-full justify-center font-mono text-xs text-neutral-500 dark:text-neutral-400">
+          <label class="flex items-center gap-2">
+            work
+            <input id="work-minutes" type="number" min="1" max="90" value="25" class="w-14 rounded-sm border border-neutral-300 dark:border-neutral-700 bg-transparent px-2 py-1 text-center text-neutral-900 dark:text-neutral-100">
+            min
+          </label>
+          <label class="flex items-center gap-2">
+            break
+            <input id="break-minutes" type="number" min="1" max="30" value="5" class="w-14 rounded-sm border border-neutral-300 dark:border-neutral-700 bg-transparent px-2 py-1 text-center text-neutral-900 dark:text-neutral-100">
+            min
+          </label>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+  var mode = 'work';
+  var running = false;
+  var intervalId = null;
+  var remainingSeconds = 25 * 60;
+
+  var timeDisplay = document.getElementById('time-display');
+  var modeLabel = document.getElementById('mode-label');
+  var startPauseBtn = document.getElementById('start-pause-btn');
+  var resetBtn = document.getElementById('reset-btn');
+  var workInput = document.getElementById('work-minutes');
+  var breakInput = document.getElementById('break-minutes');
+
+  function currentModeMinutes() {
+    return mode === 'work' ? Number(workInput.value || 25) : Number(breakInput.value || 5);
+  }
+
+  function formatTime(totalSeconds) {
+    var m = Math.floor(totalSeconds / 60);
+    var s = totalSeconds % 60;
+    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  function render() {
+    timeDisplay.textContent = formatTime(remainingSeconds);
+    modeLabel.textContent = mode;
+    startPauseBtn.textContent = running ? 'Pause' : 'Start';
+    workInput.disabled = running;
+    breakInput.disabled = running;
+    workInput.classList.toggle('opacity-50', running);
+    breakInput.classList.toggle('opacity-50', running);
+  }
+
+  function switchMode() {
+    mode = mode === 'work' ? 'break' : 'work';
+    remainingSeconds = currentModeMinutes() * 60;
+  }
+
+  function tick() {
+    if (remainingSeconds <= 0) {
+      switchMode();
+    } else {
+      remainingSeconds -= 1;
+    }
+    render();
+  }
+
+  function start() {
+    if (running) return;
+    running = true;
+    intervalId = setInterval(tick, 1000);
+    render();
+  }
+
+  function pause() {
+    running = false;
+    clearInterval(intervalId);
+    render();
+  }
+
+  function reset() {
+    pause();
+    mode = 'work';
+    remainingSeconds = currentModeMinutes() * 60;
+    render();
+  }
+
+  startPauseBtn.addEventListener('click', function () {
+    running ? pause() : start();
+  });
+
+  resetBtn.addEventListener('click', reset);
+
+  [workInput, breakInput].forEach(function (input) {
+    input.addEventListener('change', function () {
+      if (!running) {
+        remainingSeconds = currentModeMinutes() * 60;
+        render();
+      }
+    });
+  });
+
+  render();
+
+  function setTheme(theme) {
+    try { localStorage.setItem('theme', theme); } catch (e) {}
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    syncThemeToggle();
+  }
+
+  function syncThemeToggle() {
+    var isDark = document.documentElement.classList.contains('dark');
+    document.querySelectorAll('[data-theme-btn]').forEach(function (btn) {
+      var active = (btn.dataset.themeBtn === 'dark') === isDark;
+      btn.classList.toggle('bg-emerald-600/15', active);
+      btn.classList.toggle('text-emerald-700', active);
+      btn.classList.toggle('dark:bg-emerald-400/15', active);
+      btn.classList.toggle('dark:text-emerald-300', active);
+      btn.classList.toggle('text-neutral-500', !active);
+      btn.classList.toggle('dark:text-neutral-400', !active);
+    });
+  }
+
+  document.querySelectorAll('[data-theme-btn]').forEach(function (btn) {
+    btn.addEventListener('click', function () { setTheme(btn.dataset.themeBtn); });
+  });
+
+  syncThemeToggle();
+</script>
+</body>
+</html>

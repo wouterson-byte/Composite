@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Composite — Tools Portal</title>
+<script>
+  (function () {
+    try {
+      var stored = localStorage.getItem('theme');
+      var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (theme === 'dark') document.documentElement.classList.add('dark');
+    } catch (e) {}
+  })();
+</script>
+<script>
+  tailwind = { config: {
+    darkMode: 'class',
+    theme: { extend: {
+      fontFamily: {
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        sans: ['"IBM Plex Sans"', 'ui-sans-serif', 'sans-serif']
+      }
+    } }
+  } };
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+</head>
+<body class="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 font-sans transition-colors">
+
+<div class="max-w-5xl mx-auto px-6 py-14 sm:py-20">
+
+  <header class="flex items-start justify-between gap-6 mb-14">
+    <div class="flex flex-col gap-1.5">
+      <h1 class="font-mono font-semibold text-3xl sm:text-4xl tracking-tight">~/composite</h1>
+      <p class="font-mono text-sm text-emerald-600 dark:text-emerald-400">$ browse the toolset</p>
+    </div>
+
+    <div id="theme-toggle" class="flex items-center gap-0.5 rounded-md border border-neutral-300 dark:border-neutral-700 overflow-hidden font-mono text-xs shrink-0">
+      <button type="button" data-theme-btn="light" class="px-3 py-2 transition-colors">LIGHT</button>
+      <button type="button" data-theme-btn="dark" class="px-3 py-2 transition-colors">DARK</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="tool-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </main>
+
+</div>
+
+<script>
+  var tools = [
+    {
+      title: "Pomodoro Timer",
+      description: "Work and break intervals to keep a session focused.",
+      href: "pomodoro-timer.html",
+      icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><line x1="12" y1="13" x2="12" y2="9"></line><line x1="12" y1="13" x2="15" y2="14.5"></line><line x1="9" y1="2" x2="15" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line></svg>'
+    },
+    {
+      title: "Unit Converter",
+      description: "Convert length, weight, and temperature in one place.",
+      href: "unit-converter.html",
+      icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h13"></path><path d="M14 3l4 4-4 4"></path><path d="M20 17H7"></path><path d="M10 21l-4-4 4-4"></path></svg>'
+    }
+  ];
+
+  function toolCardHtml(tool) {
+    return (
+      '<a href="' + tool.href + '" class="group flex flex-col rounded-sm border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-emerald-500/50 dark:hover:border-emerald-400/40 transition-colors overflow-hidden">' +
+        '<div class="flex items-center gap-1.5 px-3 py-2 border-b border-neutral-200 dark:border-neutral-800">' +
+          '<span class="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>' +
+          '<span class="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>' +
+          '<span class="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>' +
+          '<span class="ml-1.5 font-mono text-[11px] text-neutral-500 dark:text-neutral-400">' + tool.href + '</span>' +
+        '</div>' +
+        '<div class="flex flex-col gap-4 p-5">' +
+          '<div class="w-11 h-11 rounded-md flex items-center justify-center bg-emerald-600/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400">' + tool.icon + '</div>' +
+          '<div class="flex flex-col gap-1.5">' +
+            '<span class="font-mono font-semibold text-[17px]">' + tool.title + '</span>' +
+            '<p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">' + tool.description + '</p>' +
+          '</div>' +
+        '</div>' +
+      '</a>'
+    );
+  }
+
+  var placeholderCardHtml =
+    '<div class="flex flex-col items-center justify-center gap-2.5 rounded-sm border border-dashed border-neutral-300 dark:border-neutral-700 p-8 text-neutral-400 dark:text-neutral-600">' +
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>' +
+      '<span class="font-mono text-xs">more tools soon</span>' +
+    '</div>';
+
+  document.getElementById('tool-grid').innerHTML = tools.map(toolCardHtml).join('') + placeholderCardHtml;
+
+  function setTheme(theme) {
+    try { localStorage.setItem('theme', theme); } catch (e) {}
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    syncThemeToggle();
+  }
+
+  function syncThemeToggle() {
+    var isDark = document.documentElement.classList.contains('dark');
+    document.querySelectorAll('[data-theme-btn]').forEach(function (btn) {
+      var active = (btn.dataset.themeBtn === 'dark') === isDark;
+      btn.classList.toggle('bg-emerald-600/15', active);
+      btn.classList.toggle('text-emerald-700', active);
+      btn.classList.toggle('dark:bg-emerald-400/15', active);
+      btn.classList.toggle('dark:text-emerald-300', active);
+      btn.classList.toggle('text-neutral-500', !active);
+      btn.classList.toggle('dark:text-neutral-400', !active);
+    });
+  }
+
+  document.querySelectorAll('[data-theme-btn]').forEach(function (btn) {
+    btn.addEventListener('click', function () { setTheme(btn.dataset.themeBtn); });
+  });
+
+  syncThemeToggle();
+</script>
+</body>
+</html>
